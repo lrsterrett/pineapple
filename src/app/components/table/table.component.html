@@ -1,5 +1,13 @@
-<div class="device-table" *ngIf="deviceTable">
-  <table class="device-table__table">
+<div class='search-input card'>
+  <mat-form-field >
+    <mat-label>Search Devices</mat-label>
+    <input matInput type="text" [formControl]="search">
+    <button *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearchText()"></button>
+  </mat-form-field>
+</div>
+
+<div class="device-table card" *ngIf="deviceTable">
+  <table class="device-table__table" *ngIf="deviceTable.rows.length; else noResults">
     <caption class="device-table__caption">{{ deviceTable.title }}</caption>
     <thead>
       <th *ngFor="let header of deviceTable.headers" class="device-table__th">
@@ -15,3 +23,7 @@
     </tbody>
   </table>
 </div>
+
+<ng-template #noResults>
+  <p class="no-results-message">No results match your search.</p>
+</ng-template>

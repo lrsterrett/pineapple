@@ -1,17 +1,25 @@
 $card-bg: #fff;
 $card-shadow: 0 4px 9px rgba(0, 0, 0, .2);
+$standard-padding: .25rem;
 
-.device-table {
+.card {
   background: $card-bg;
   border-radius: 4px;
   box-shadow: $card-shadow;
   margin: 2rem auto;
   width: 1000px;
+}
+
+.search-input {
+  padding: $standard-padding;
+}
+
+.device-table {
 
   &__caption {
     font-size: 1.25rem;
     font-weight: 500;
-    padding: .25rem;
+    padding: $standard-padding;
     text-align: left;
   }
 
@@ -20,8 +28,12 @@ $card-shadow: 0 4px 9px rgba(0, 0, 0, .2);
 
     td,
     th {
-      padding: .25rem;
+      padding: $standard-padding;
       text-align: left;
     }
   }
+}
+
+.no-results-message {
+  padding: $standard-padding;
 }
