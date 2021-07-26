@@ -1,8 +1,10 @@
 <div class='search-input card'>
-  <mat-form-field >
+  <mat-form-field class="form-field">
     <mat-label>Search Devices</mat-label>
     <input matInput type="text" [formControl]="search">
-    <button *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearchText()"></button>
+    <button *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearchText()">
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
 </div>
 

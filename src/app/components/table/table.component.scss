@@ -14,6 +14,10 @@ $standard-padding: .25rem;
   padding: $standard-padding;
 }
 
+.form-field {
+  width: 200px;
+}
+
 .device-table {
 
   &__caption {
