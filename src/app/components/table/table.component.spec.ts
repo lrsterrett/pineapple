@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -13,6 +13,7 @@ import { TableComponent } from './table.component';
 describe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
+  let searchInput: HTMLInputElement;
   let mockDeviceService;
 
   const devicesFixture: Device[] = [
@@ -50,8 +51,13 @@ describe('TableComponent', () => {
   };
 
   beforeEach(async(() => {
-    mockDeviceService = jasmine.createSpyObj(['getAll']);
+    mockDeviceService = jasmine.createSpyObj(['getAll', 'searchAll']);
     mockDeviceService.getAll.and.returnValue(of(devicesTableFixture));
+    mockDeviceService.searchAll.and.returnValue(of({
+      ...devicesTableFixture,
+      collection_entries: 0,
+      rows: []
+    }));
 
     TestBed.configureTestingModule({
       declarations: [ TableComponent ],
@@ -69,7 +75,9 @@ describe('TableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
+    searchInput = fixture.nativeElement.querySelector('.search-input input');
     fixture.detectChanges();
+    spyOn<any>(component, 'unsubscribe');
   });
 
   it('should create', () => {
@@ -83,6 +91,43 @@ describe('TableComponent', () => {
       component.ngOnInit();
 
       expect(component.deviceTable).toEqual(devicesTableFixture);
+    });
+
+    it('should set search form control and subscribe for value changes', () => {
+      component.search = null;
+
+      expect(component.search).toBeDefined;
+
+      expect(component.subscriptions.length).toBe(1);
+    });
+  });
+
+  describe('search input', () => {
+    beforeEach(() => {
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+    });
+    
+    it('should call `deviceService.searchAll` when text input changes', () => {
+      searchInput.value = 'app';
+      searchInput.dispatchEvent(new Event('input'));
+
+      expect(component.deviceTable.rows.length).toBe(3);
+
+      jasmine.clock().tick(201);
+
+      expect(component.deviceTable.rows.length).toBe(0);
+    });
+  });
+
+  describe('ngOnDestroy', () => {
+    it("should call component's unsubscribe method", () => {
+      component.ngOnDestroy();
+
+      expect(component['unsubscribe']).toHaveBeenCalled();
     });
   });
 });
